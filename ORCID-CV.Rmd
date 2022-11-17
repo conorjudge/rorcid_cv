@@ -17,6 +17,13 @@ output: vitae::awesomecv
 orcid_id = "0000-0001-9473-2920"
 
 #tinytex::install_tinytex()
+#install.packages("vitae")
+#install.packages("rorcid")
+#install.packages("dplyr")
+#install.packages("tidyverse")
+#install.packages("httpv")
+#install.packages("usethis")
+
 
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 
@@ -24,6 +31,10 @@ library(vitae)
 library(rorcid)
 library(dplyr)
 library(tidyverse)
+
+#rorcid::orcid_auth()
+#usethis::edit_r_environ()
+#ORCID_TOKEN="c46eb168-d151-49fa-b774-300c7200e3b6"
 
 ```
 
@@ -67,16 +78,32 @@ my_exp %>%
   )
 
 ```
+
+# Awards
+
+```{r}
+my_awards <- do.call("bind_rows",
+  rorcid::orcid_distinctions("0000-0001-9473-2920")$`0000-0001-9473-2920`$`affiliation-group`$summaries
+)
+
+#For the my_exp variable below: if there is no end date on your recent employment, replace `employment-summary.end-date.year.value` with `employment-summary.end-date`. 
+my_awards %>%
+  detailed_entries(
+    what = `distinction-summary.role-title`,
+    when = glue::glue("{`distinction-summary.start-date.year.value`}"),
+    with = `distinction-summary.organization.name`,
+    where = glue::glue("{`distinction-summary.organization.address.city`}, {`distinction-summary.organization.address.region`}")
+  )
+
+```
 # Languages:
   
   * **English**: native language.
-  * **Spanish**: advanced speaking, writing and reading.
-  * **French**: intermediate speaking, writing and reading.
 
 # Skills
 These are some of the skills and knowledge I aquired during my training, education and courses
 
-  * **First overarching skillname**:  
+  * **R statistical programming language**:  
       List the details, including software, techniques, etc.
   * **Second overarching skillname**:  
       List the details, including software, techniques, etc.
@@ -89,7 +116,7 @@ These are some of the skills and knowledge I aquired during my training, educati
 
 ```{r}
 
-out <- works(orcid_id("0000-0001-9473-2920")) 
+out <- works(orcid_id(orcid_id)) 
  tibble(
    Journal = out$`journal-title.value`,
    Title = out$title.title.value,
